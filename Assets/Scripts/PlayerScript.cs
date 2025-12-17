@@ -5,72 +5,80 @@ public class PlayerScript : MonoBehaviour
 {
     public SpriteRenderer sr;
     public Rigidbody2D rb;
-    public float Speed = 5;
+    public float speed = 5;
+    public float time;
     
-    public float JumpPower = 17;
-    public float Gravity = 3;
+    public float jumpPower = 17;
+    public float gravity = 3;
     public bool OnGround = false;
-    public bool Bounce;
-    public bool Pause;
+    public bool bounce;
+    public bool pause;
     
-    public bool FacingLeft = false;
-    public Animator ANI;
+    public bool facingLeft = false;
+    public Animator ani;
 
-    public GameObject Net;
+    public GameObject skill;
+    public LineScript line;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Pause = false;
-        rb.gravityScale = Gravity;
+        pause = false;
+        skill.SetActive(false);
+        rb.gravityScale = gravity;
+        time = 0f;
     }
 
     // Update is called once per frame
     void Update()
     {
         Vector2 vel = rb.linearVelocity;
+        time += Time.deltaTime;
         
-        if (Input.GetKey(KeyCode.D))
+        if (Input.GetKey(KeyCode.D) & pause == false)
         { 
             //If I hit right, move right
-            vel.x = Speed;
+            vel.x = speed;
             //If I hit right, mark that I'm not facing left
-            FacingLeft = false;
-            ANI.SetBool("Walking", true);
+            facingLeft = false;
+            ani.SetBool("Walking", true);
         }
-        else if (Input.GetKey(KeyCode.A))
+        else if (Input.GetKey(KeyCode.A) & pause == false)
         { 
             //If I hit left, move right
-            vel.x = -Speed;
+            vel.x = -speed;
             //If I hit left, mark that I'm facing left
-            FacingLeft = true;
-            ANI.SetBool("Walking", true);
+            facingLeft = true;
+            ani.SetBool("Walking", true);
         }
         else
         {  //If I hit neither, come to a stop
             vel.x = 0;
-            ANI.SetBool("Walking", false);
+            ani.SetBool("Walking", false);
         }
 
         //If I hit Z and can jump, jump
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.W) & pause == false)
         {
-            if (Bounce == false && CanJump())
+            if (bounce == false && CanJump())
             {
-                vel.y = JumpPower;
+                vel.y = jumpPower;
             }
-            else if(Bounce == true)
+            else if(bounce == true)
             {
-                vel.y = JumpPower + 5;
+                vel.y = jumpPower + 5;
             }
         }
 
-        if (Bounce == true && CanJump())
+        if (bounce == true && CanJump())
         {
-            vel.y = JumpPower/2;
+            vel.y = jumpPower/2;
         }
         rb.linearVelocity = vel;
-        sr.flipX = FacingLeft;
-        
+        sr.flipX = facingLeft;
+        if(!skill.activeSelf)
+        {
+            pause = false;
+        }
     }
     
     private bool CanJump()
@@ -85,46 +93,40 @@ public class PlayerScript : MonoBehaviour
         
         if (other.gameObject.CompareTag("Bouncy"))
         {
-            Bounce = true;
+            bounce = true;
         }
         else
         {
-            Bounce = false;
+            bounce = false;
         }
     }
     private void OnCollisionStay2D(Collision2D other)
     {
         OnGround = true;
-        if (other.gameObject.CompareTag("Task"))
-        {
-            if (Input.GetKeyDown(KeyCode.E) & Pause == false)
-            {
-                Pause = true;
-            }
-            else if (Input.GetKeyDown(KeyCode.E) & Pause == true)
-            {
-                Pause = false;
-            }
-            
-        }
     }
 
     private void OnTriggerStay2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Task"))
         {
-            if (Input.GetKeyDown(KeyCode.E) & Pause == false)
+            if (Input.GetKey(KeyCode.E) & pause == false & time >= 0.3f)
             {
-                Pause = true;
+                time = 0f;
+                pause = true;
+                skill.SetActive(true);
+                line.StartUp();
             }
-            if (Input.GetKeyDown(KeyCode.E) & Pause == true)
+            else if (Input.GetKey(KeyCode.E) & pause == true & time >= 0.3f)
             {
-                Pause = false;
+                time = 0f;
+                pause = false;
+                skill.SetActive(false);
             }
-            
         }
-        throw new NotImplementedException();
     }
+    
+    
+    
 
     private void OnCollisionExit2D(Collision2D other)
     {

@@ -46,9 +46,11 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.0.56f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\NetScript.cs" />
+    <Compile Include="Assets\SkillCheckScript.cs" />
     <Compile Include="Assets\Scripts\PlayerScript.cs" />
+    <Compile Include="Assets\LineScript.cs" />
     <Compile Include="Assets\GameManager.cs" />
+    <Compile Include="Assets\GoalScript.cs" />
     <Compile Include="Assets\LedgeScript.cs" />
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\6000.0.56f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>

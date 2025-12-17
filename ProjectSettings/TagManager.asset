@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Bouncy
   - Task
+  - Goal
+  - pop
+  - Bar
   layers:
   - Default
   - TransparentFX
